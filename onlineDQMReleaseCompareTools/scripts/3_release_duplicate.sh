@@ -24,20 +24,28 @@ cmsswdeploy0()
 file0=$(ls | grep -E ^${1} | head -n 1)
 line1=$(cat ${file0} | head -n 1)
 line2=$(cat ${file0} | head -n 2 | tail -n 1)
-type1=$(echo ${line1} | awk '{print $1}')
-type2=$(echo ${line2} | awk '{print $1}')
-mmdd1=$(echo ${line1} | awk '{print $2}')
-mmdd2=$(echo ${line2} | awk '{print $2}')
-vers1=$(echo ${line1} | awk '{print $3}')
-vers2=$(echo ${line2} | awk '{print $3}')
-pull1=$(echo ${line1} | awk '{print $4}')
-pull2=$(echo ${line2} | awk '{print $4}')
-pnum1=$(echo ${pull1} | sed 's|,|_|g')
-pnum2=$(echo ${pull2} | sed 's|,|_|g')
-rnum1=$(echo ${line1} | awk '{print $5}')
-rnum2=$(echo ${line2} | awk '{print $5}')
-rkey1=$(echo ${line1} | awk '{print $6}')
-rkey2=$(echo ${line2} | awk '{print $6}')
+type1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $1}')
+type2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $1}')
+mmdd1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $2}')
+mmdd2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $2}')
+vers1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $4"_"$5"_"$6}')
+vers2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $4"_"$5"_"$6}')
+if [ -z $(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $7}') ]; then
+  pnum1="-"
+else
+  pnum1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=7; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+fi
+if [ -z $(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $7}') ]; then
+  pnum2="-"
+else
+  pnum2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=7; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+fi
+pull1=$(echo ${pnum1} | sed 's|_|,|g')
+pull2=$(echo ${pnum2} | sed 's|_|,|g')
+rnum1=$(echo ${line1} | awk '{print $2}')
+rnum2=$(echo ${line2} | awk '{print $2}')
+rkey1=$(echo ${line1} | awk '{print $3}')
+rkey2=$(echo ${line2} | awk '{print $3}')
 if [ -z ${rkey1} ] || [ -z ${rkey2} ]; then
   echo "$0: check your text input file ^${1}."
   exit

@@ -1,5 +1,5 @@
 #!/bin/bash
-# ./4_release_run.sh playback_14_0_4_xxx 379446 pp_run
+# ./release_run.sh playback_14_0_4_xxx 379446 pp_run
 # contact: zhengchen.liang@cern.ch
 
 conf0=onlineDQMReleaseCompareTools/templates/localtest_clients_all # using the template of client list to compare

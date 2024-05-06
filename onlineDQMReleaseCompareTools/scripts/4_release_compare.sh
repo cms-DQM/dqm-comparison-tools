@@ -1,5 +1,5 @@
 #!/bin/bash
-# ./5_dqmclient_compare.sh s50
+# ./4_dqmclient_compare.sh s50
 
 if [ ! $USER = dqmdev ]; then
   echo "$0: Please run as user dqmdev."
@@ -64,9 +64,9 @@ else
 fi
 
 cd ${dire0}
-./4_release_run.sh ${base1} ${base2} ${base3}
+./release_run.sh ${base1} ${base2} ${base3}
 mv ${work0}/streamlogs ${work0}/${inid0}/streamlogs_${base1}
-./4_release_run.sh ${comp1} ${comp2} ${comp3}
+./release_run.sh ${comp1} ${comp2} ${comp3}
 mv ${work0}/streamlogs ${work0}/${inid0}/streamlogs_${comp1}
 
 cd ${work0}/${inid0}

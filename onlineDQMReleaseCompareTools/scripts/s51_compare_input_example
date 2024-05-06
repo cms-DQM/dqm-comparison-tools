@@ -1,8 +1,0 @@
-playback 0403 14_0_4 - 379446 pp_run
-playback 0409 14_0_4 44675 379446 pp_run
-
-Note:
-The 1st line is for base release.
-The 2nd line is for comp release.
-Format:
-[playbck/production] [mmdd] [14_X_X] [PR1,PR2,... (- for none)] [run number] [run key]

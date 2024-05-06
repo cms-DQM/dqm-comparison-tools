@@ -1,0 +1,8 @@
+playback_0403_CMSSW_14_0_4 379446 pp_run
+playback_0409_CMSSW_14_0_4_44675 379446 pp_run
+
+Note:
+The 1st line is for base release.
+The 2nd line is for comp release.
+Format:
+[playbck_blablabla (copied from /dqmdata/dqm_cmssw/)] [run number] [run key]
