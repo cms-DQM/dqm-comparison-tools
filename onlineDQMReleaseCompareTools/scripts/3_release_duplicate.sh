@@ -149,7 +149,7 @@ if [ $# -eq 1 ]; then
   fi
   cd ${DEP1}
   cmsenv
-  if [ ${pull1} = "-" ]; then
+  if [ ! -d DQM/Integration ]; then
     git cms-addpkg DQM/Integration
   fi
   modi0="DQM/Integration/python/config/FrontierCondition_GT_autoExpress_cfi.py"
@@ -190,7 +190,7 @@ if [ $# -eq 1 ]; then
   fi
   cd ${DEP2}
   cmsenv
-  if [ ${pull2} = "-" ]; then
+  if [ ! -d DQM/Integration ]; then
     git cms-addpkg DQM/Integration
   fi
   modi0="DQM/Integration/python/config/FrontierCondition_GT_autoExpress_cfi.py"
