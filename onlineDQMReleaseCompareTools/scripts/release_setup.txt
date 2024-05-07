@@ -1,14 +1,16 @@
-playback_0403_CMSSW_14_0_4 379446 pp_run
-playback_0409_CMSSW_14_0_4_44675 379446 pp_run
+playback_0403_CMSSW_14_0_4 379446 pp_run 140X_dataRun3_Express_v3 140X_dataRun3_HLT_v3
+playback_0409_CMSSW_14_0_4_44675 379446 pp_run 140X_dataRun3_Express_v3 140X_dataRun3_HLT_v3
+I want to compare at least 20 events per LS.
 
 ----------
 
 Notes for the user:
   The 1st line is for base release.
   The 2nd line is for comp release.
+  The 3rd line is for your minimum events per LS to compare.
 
 In format:
-  [playback_blablabla] [run number] [run key]
+  [playback_blablabla] [run number] [run key] [express GlobalTag] [HLT GlobalTag]
 
 Where [playback_blablabla] is copied from `readlink -f current_playback` or a release name in /dqmdata/dqm_cmssw/
 

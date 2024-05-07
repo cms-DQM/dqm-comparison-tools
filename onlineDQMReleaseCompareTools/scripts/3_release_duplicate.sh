@@ -2,12 +2,6 @@
 # ./3_release_duplicate.sh s50 1
 # contact: zhengchen.liang@cern.ch
 
-base_exp="140X_dataRun3_Express_v2"
-base_hlt="140X_dataRun3_HLT_v3"
-comp_exp="140X_dataRun3_Express_v2"
-comp_hlt="140X_dataRun3_HLT_v3"
-evt0=20 # how many minimal events to compare in each LS
-
 if [ ! $USER = dqmdev ]; then
   echo "$0: Please run as user dqmdev."
   exit
@@ -26,6 +20,7 @@ cmsswdeploy0()
 file0=$(ls | grep -E ^${1} | head -n 1)
 line1=$(cat ${file0} | head -n 1)
 line2=$(cat ${file0} | head -n 2 | tail -n 1)
+line3=$(cat ${file0} | head -n 3 | tail -n 1)
 type1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $1}')
 type2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $1}')
 mmdd1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $2}')
@@ -117,6 +112,12 @@ rnum1=$(echo ${line1} | awk '{print $2}')
 rnum2=$(echo ${line2} | awk '{print $2}')
 rkey1=$(echo ${line1} | awk '{print $3}')
 rkey2=$(echo ${line2} | awk '{print $3}')
+base_exp=$(echo ${line1} | awk '{print $4}')
+comp_exp=$(echo ${line2} | awk '{print $4}')
+base_hlt=$(echo ${line1} | awk '{print $5}')
+comp_hlt=$(echo ${line2} | awk '{print $5}')
+evt0=$(echo ${line3} | grep -o '[0-9]\+')
+
 if [ -z ${rkey1} ] || [ -z ${rkey2} ]; then
   echo "$0: check your text input file ^${1}."
   exit
@@ -129,18 +130,18 @@ work0=/home/dqmdevlocal/DQMReleaseCompare
 if [ $# -eq 1 ]; then
   cd ${dply0}
   if [ ${pull1} = "-" ]; then
-    DEP1="compare_${type1}_${mmdd1}_CMSSW_${vers1}"
+    DEP1="compare_base_${type1}_${mmdd1}_CMSSW_${vers1}"
   else
-    DEP1="compare_${type1}_${mmdd1}_CMSSW_${vers1}_${pnum1}"
+    DEP1="compare_base_${type1}_${mmdd1}_CMSSW_${vers1}_${pnum1}"
   fi
   if [ -d ${DEP1} ]; then
     rm -rf ${DEP1}
   fi
   export DEP1="${DEP1}/src/"
   if [ ${pull1} = "-" ]; then
-    cmsswdeploy0 make-release --use-tmp -l compare_${type1}_${mmdd1} -t CMSSW_${vers1} --no-build
+    cmsswdeploy0 make-release --use-tmp -l compare_base_${type1}_${mmdd1} -t CMSSW_${vers1} --no-build
   else
-    cmsswdeploy0 make-release --use-tmp -l compare_${type1}_${mmdd1} -t CMSSW_${vers1} -p ${pull1} --no-build
+    cmsswdeploy0 make-release --use-tmp -l compare_base_${type1}_${mmdd1} -t CMSSW_${vers1} -p ${pull1} --no-build
   fi
   if [ ! -d ${DEP1} ]; then
     echo "$0: failed create ${DEP1}."
@@ -170,18 +171,18 @@ if [ $# -eq 1 ]; then
   scram b -j24
   cd ${dply0}
   if [ ${pull2} = "-" ]; then
-    DEP2="compare_${type2}_${mmdd2}_CMSSW_${vers2}"
+    DEP2="compare_comp_${type2}_${mmdd2}_CMSSW_${vers2}"
   else
-    DEP2="compare_${type2}_${mmdd2}_CMSSW_${vers2}_${pnum2}"
+    DEP2="compare_comp_${type2}_${mmdd2}_CMSSW_${vers2}_${pnum2}"
   fi
   if [ -d ${DEP2} ]; then
     rm -rf ${DEP2}
   fi
   export DEP2="${DEP2}/src/"
   if [ ${pull2} = "-" ]; then
-    cmsswdeploy0 make-release --use-tmp -l compare_${type2}_${mmdd2} -t CMSSW_${vers2} --no-build
+    cmsswdeploy0 make-release --use-tmp -l compare_comp_${type2}_${mmdd2} -t CMSSW_${vers2} --no-build
   else
-    cmsswdeploy0 make-release --use-tmp -l compare_${type2}_${mmdd2} -t CMSSW_${vers2} -p ${pull2} --no-build
+    cmsswdeploy0 make-release --use-tmp -l compare_comp_${type2}_${mmdd2} -t CMSSW_${vers2} -p ${pull2} --no-build
   fi
   if [ ! -d ${DEP2} ]; then
     echo "$0: failed create ${DEP2}."
@@ -211,29 +212,29 @@ if [ $# -eq 1 ]; then
   scram b -j24
   cd ${dire0}
   if [ ${pull1} = "-" ]; then
-    echo "compare_${type1}_${mmdd1}_CMSSW_${vers1} ${rnum1} ${rkey1}" > tmp_${file0}
+    echo "compare_base_${type1}_${mmdd1}_CMSSW_${vers1} ${rnum1} ${rkey1}" > tmp_${file0}
   else
-    echo "compare_${type1}_${mmdd1}_CMSSW_${vers1}_${pnum1} ${rnum1} ${rkey1}" > tmp_${file0}
+    echo "compare_base_${type1}_${mmdd1}_CMSSW_${vers1}_${pnum1} ${rnum1} ${rkey1}" > tmp_${file0}
   fi
   if [ ${pull2} = "-" ]; then
-    echo "compare_${type2}_${mmdd2}_CMSSW_${vers2} ${rnum2} ${rkey2}" >> tmp_${file0}
+    echo "compare_comp_${type2}_${mmdd2}_CMSSW_${vers2} ${rnum2} ${rkey2}" >> tmp_${file0}
   else
-    echo "compare_${type2}_${mmdd2}_CMSSW_${vers2}_${pnum2} ${rnum2} ${rkey2}" >> tmp_${file0}
+    echo "compare_comp_${type2}_${mmdd2}_CMSSW_${vers2}_${pnum2} ${rnum2} ${rkey2}" >> tmp_${file0}
   fi
 elif [ $# -eq 2 ]; then
   cd ${dply0}
   if [ ${pull1} = "-" ]; then
-    DEP1="compare_${type1}_${mmdd1}_CMSSW_${vers1}"
+    DEP1="compare_base_${type1}_${mmdd1}_CMSSW_${vers1}"
   else
-    DEP1="compare_${type1}_${mmdd1}_CMSSW_${vers1}_${pnum1}"
+    DEP1="compare_base_${type1}_${mmdd1}_CMSSW_${vers1}_${pnum1}"
   fi
   if [ -d ${DEP1} ]; then
     rm -rf ${DEP1}
   fi
   if [ ${pull2} = "-" ]; then
-    DEP2="compare_${type2}_${mmdd2}_CMSSW_${vers2}"
+    DEP2="compare_comp_${type2}_${mmdd2}_CMSSW_${vers2}"
   else
-    DEP2="compare_${type2}_${mmdd2}_CMSSW_${vers2}_${pnum2}"
+    DEP2="compare_comp_${type2}_${mmdd2}_CMSSW_${vers2}_${pnum2}"
   fi
   if [ -d ${DEP2} ]; then
     rm -rf ${DEP2}
