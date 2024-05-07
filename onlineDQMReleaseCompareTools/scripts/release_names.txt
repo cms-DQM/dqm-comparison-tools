@@ -1,8 +1,19 @@
 playback_0403_CMSSW_14_0_4 379446 pp_run
 playback_0409_CMSSW_14_0_4_44675 379446 pp_run
 
-Note:
-The 1st line is for base release.
-The 2nd line is for comp release.
-Format:
-[playbck_blablabla (copied from /dqmdata/dqm_cmssw/)] [run number] [run key]
+----------
+
+Notes for the user:
+  The 1st line is for base release.
+  The 2nd line is for comp release.
+
+In format:
+  [playback_blablabla] [run number] [run key]
+
+Where [playback_blablabla] is copied from `readlink -f current_playback` or a release name in /dqmdata/dqm_cmssw/
+
+It should have the pattern:
+  playback_[mmdd]_[CMSSW_14_0_4_UL_patch1_pre2]_[44675_44621]
+
+IMPORTANT:
+  To match the pattern please do not put an '_' into the term [mmdd]. So if the copied one has such '_' in [mmdd_myBlablabla], please change the writing to [mmddAndMyBlablabla] and proceed.

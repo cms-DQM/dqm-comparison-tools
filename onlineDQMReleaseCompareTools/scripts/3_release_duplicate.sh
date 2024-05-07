@@ -30,17 +30,86 @@ type1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $1}')
 type2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $1}')
 mmdd1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $2}')
 mmdd2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $2}')
-vers1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $4"_"$5"_"$6}')
-vers2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $4"_"$5"_"$6}')
-if [ -z $(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $7}') ]; then
+sevn1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $7}')
+sevn2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $7}')
+eght1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $8}')
+eght2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $8}')
+nine1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $9}')
+nine2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $9}')
+ten1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $10}')
+ten2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $10}')
+elv1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{print $11}')
+elv2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $11}')
+
+if false \
+  || [[ -z ${sevn1} ]] \
+  || ( [[ ${sevn1} =~ ^[a-zA-Z] ]] \
+    && [[ -z ${eght1} ]] \
+  ) \
+  || ( [[ ${eght1} =~ ^[a-zA-Z] ]] \
+    && [[ -z ${nine1} ]] \
+  ) \
+  || ( [[ ${nine1} =~ ^[a-zA-Z] ]] \
+    && [[ -z ${ten1} ]] \
+  ) \
+  || ( [[ ${ten1} =~ ^[a-zA-Z] ]] \
+    && [[ -z ${elv1} ]] \
+  ) \
+; then
   pnum1="-"
+  vers1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
 else
-  pnum1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=7; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  if [[ ${sevn1} =~ ^[0-9] ]]; then
+    vers1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=6; i++) printf "%s%s", $i, (i<6 ? "_" : "")}')
+    pnum1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=7; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  elif [[ ${eght1} =~ ^[0-9] ]]; then
+    vers1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=7; i++) printf "%s%s", $i, (i<7 ? "_" : "")}')
+    pnum1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=8; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  elif [[ ${nine1} =~ ^[0-9] ]]; then
+    vers1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=8; i++) printf "%s%s", $i, (i<8 ? "_" : "")}')
+    pnum1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=9; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  elif [[ ${ten1} =~ ^[0-9] ]]; then
+    vers1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=9; i++) printf "%s%s", $i, (i<9 ? "_" : "")}')
+    pnum1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=10; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  elif [[ ${elv1} =~ ^[0-9] ]]; then
+    vers1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=10; i++) printf "%s%s", $i, (i<10 ? "_" : "")}')
+    pnum1=$(echo ${line1} | awk '{print $1}' | awk -F'_' '{for(i=11; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  else
+    echo "$0: please check your CMSSW version format for the base release."
+    exit
+  fi
 fi
-if [ -z $(echo ${line2} | awk '{print $1}' | awk -F'_' '{print $7}') ]; then
+if false \
+  || [[ -z ${sevn2} ]] \
+  || ( [[ ${sevn2} =~ ^[a-zA-Z] ]] \
+    && [[ -z ${eght2} ]] \
+  ) \
+  || ( [[ ${eght2} =~ ^[a-zA-Z] ]] \
+    && [[ -z ${nine2} ]] \
+  ) \
+; then
   pnum2="-"
+  vers2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
 else
-  pnum2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=7; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  if [[ ${sevn2} =~ ^[0-9] ]]; then
+    vers2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=6; i++) printf "%s%s", $i, (i<6 ? "_" : "")}')
+    pnum2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=7; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  elif [[ ${eght2} =~ ^[0-9] ]]; then
+    vers2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=7; i++) printf "%s%s", $i, (i<7 ? "_" : "")}')
+    pnum2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=8; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  elif [[ ${nine2} =~ ^[0-9] ]]; then
+    vers2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=8; i++) printf "%s%s", $i, (i<8 ? "_" : "")}')
+    pnum2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=9; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  elif [[ ${ten2} =~ ^[0-9] ]]; then
+    vers2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=9; i++) printf "%s%s", $i, (i<9 ? "_" : "")}')
+    pnum2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=10; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  elif [[ ${elv2} =~ ^[0-9] ]]; then
+    vers2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=4; i<=10; i++) printf "%s%s", $i, (i<10 ? "_" : "")}')
+    pnum2=$(echo ${line2} | awk '{print $1}' | awk -F'_' '{for(i=11; i<=NF; i++) printf "%s%s", $i, (i<NF ? "_" : "")}')
+  else
+    echo "$0: please check your CMSSW version format for the comp release."
+    exit
+  fi
 fi
 pull1=$(echo ${pnum1} | sed 's|_|,|g')
 pull2=$(echo ${pnum2} | sed 's|_|,|g')
