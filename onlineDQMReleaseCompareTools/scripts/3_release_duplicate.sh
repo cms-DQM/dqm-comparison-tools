@@ -2,8 +2,10 @@
 # ./3_release_duplicate.sh s50 1
 # contact: zhengchen.liang@cern.ch
 
-exp0="140X_dataRun3_Express_v2"
-hlt0="140X_dataRun3_HLT_v3"
+base_exp="140X_dataRun3_Express_v2"
+base_hlt="140X_dataRun3_HLT_v3"
+comp_exp="140X_dataRun3_Express_v2"
+comp_hlt="140X_dataRun3_HLT_v3"
 evt0=20 # how many minimal events to compare in each LS
 
 if [ ! $USER = dqmdev ]; then
@@ -81,9 +83,9 @@ if [ $# -eq 1 ]; then
     git cms-addpkg DQM/Integration
   fi
   modi0="DQM/Integration/python/config/FrontierCondition_GT_autoExpress_cfi.py"
-  cat ${modi0} | awk -v ar0=${exp0} '/^GlobalTag.globaltag/ {sub(/=.*/, "= \"" ar0 "\"")} {print}' > tmp && mv tmp ${modi0}
+  cat ${modi0} | awk -v ar0=${base_exp} '/^GlobalTag.globaltag/ {sub(/=.*/, "= \"" ar0 "\"")} {print}' > tmp && mv tmp ${modi0}
   modi0="DQM/Integration/python/config/FrontierCondition_GT_cfi.py"
-  cat ${modi0} | awk -v ar0=${hlt0} '/^GlobalTag.globaltag/ {sub(/=.*/, "= \"" ar0 "\"")} {print}' > tmp && mv tmp ${modi0}
+  cat ${modi0} | awk -v ar0=${base_hlt} '/^GlobalTag.globaltag/ {sub(/=.*/, "= \"" ar0 "\"")} {print}' > tmp && mv tmp ${modi0}
   patn0="minEventsPerLumi.*cms.*untracked.*int32"
   repl0="s|(\([0-9]\+\))|\(${evt0}\)|g"
   sed -i "/${patn0}/ ${repl0}" DQM/Integration/python/config/inputsource_cfi.py
@@ -122,9 +124,9 @@ if [ $# -eq 1 ]; then
     git cms-addpkg DQM/Integration
   fi
   modi0="DQM/Integration/python/config/FrontierCondition_GT_autoExpress_cfi.py"
-  cat ${modi0} | awk -v ar0=${exp0} '/^GlobalTag.globaltag/ {sub(/=.*/, "= \"" ar0 "\"")} {print}' > tmp && mv tmp ${modi0}
+  cat ${modi0} | awk -v ar0=${comp_exp} '/^GlobalTag.globaltag/ {sub(/=.*/, "= \"" ar0 "\"")} {print}' > tmp && mv tmp ${modi0}
   modi0="DQM/Integration/python/config/FrontierCondition_GT_cfi.py"
-  cat ${modi0} | awk -v ar0=${hlt0} '/^GlobalTag.globaltag/ {sub(/=.*/, "= \"" ar0 "\"")} {print}' > tmp && mv tmp ${modi0}
+  cat ${modi0} | awk -v ar0=${comp_hlt} '/^GlobalTag.globaltag/ {sub(/=.*/, "= \"" ar0 "\"")} {print}' > tmp && mv tmp ${modi0}
   patn0="minEventsPerLumi.*cms.*untracked.*int32"
   repl0="s|(\([0-9]\+\))|\(${evt0}\)|g"
   sed -i "/${patn0}/ ${repl0}" DQM/Integration/python/config/inputsource_cfi.py
