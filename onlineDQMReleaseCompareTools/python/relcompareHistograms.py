@@ -139,7 +139,11 @@ def compareMP(shared_paths, pr_flat_dict, comp_run, base_flat_dict, base_run, iP
       are_different=False
 
       # skip
-      skip_list = ["processID", "processTime"]
+      skip_list = [
+         "processEventRate", "processID", "processLatency", "processStartTimeStamp", "processTimeStamp",
+         "TimingMean", "TimingRMS",
+         "wallTime"
+      ]
       if any([True for x in skip_list if x in pr_item.GetName()]):
          continue
 
