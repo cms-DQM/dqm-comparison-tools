@@ -138,6 +138,11 @@ def compareMP(shared_paths, pr_flat_dict, comp_run, base_flat_dict, base_run, iP
 
       are_different=False
 
+      # skip
+      skip_list = ["processID", "processTime"]
+      if any([True for x in skip_list if x in pr_item.GetName()]):
+         continue
+
       if pr_item.InheritsFrom('TProfile2D') and base_item.InheritsFrom('TProfile2D'):
          # Compare TProfile (content, entries and errors)
          are_different = not compare_TProfile(pr_item, base_item)
