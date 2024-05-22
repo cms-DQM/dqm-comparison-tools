@@ -10,6 +10,13 @@ import numpy as np
 from DQMServices.FileIO.blacklist import get_blacklist
 import multiprocessing
 
+# Skip list of ME keywords
+skip_list = [
+   "processEventRate", "processID", "processLatency", "processStartTimeStamp", "processTimeStamp",
+   "TimingMean", "TimingRMS",
+   "wallTime"
+]
+
 def create_dif(base_file_path, comp_file_path, comprel_name, test_number, cmssw_version, num_processes, output_dir_path):
    base_file = ROOT.TFile(base_file_path, 'read')
    ROOT.gROOT.GetListOfFiles().Remove(base_file)
@@ -138,13 +145,8 @@ def compareMP(shared_paths, pr_flat_dict, comp_run, base_flat_dict, base_run, iP
 
       are_different=False
 
-      # skip
-      skip_list = [
-         "processEventRate", "processID", "processLatency", "processStartTimeStamp", "processTimeStamp",
-         "TimingMean", "TimingRMS",
-         "wallTime"
-      ]
-      if any([True for x in skip_list if x in pr_item.GetName()]):
+      # Skip ME keywords
+      if any([True for x in skip_list if (x in pr_item.GetName() and x in base_item.GetName()) or (x in path)]):
          continue
 
       if pr_item.InheritsFrom('TProfile2D') and base_item.InheritsFrom('TProfile2D'):
@@ -182,6 +184,10 @@ def compare(shared_paths, pr_flat_dict, comp_run, base_flat_dict, base_run, path
          continue
 
       are_different=False
+
+      # Skip ME keywords
+      if any([True for x in skip_list if (x in pr_item.GetName() and x in base_item.GetName()) or (x in path)]):
+         continue
 
       if pr_item.InheritsFrom('TProfile2D') and base_item.InheritsFrom('TProfile2D'):
          # Compare TProfile (content, entries and errors)
