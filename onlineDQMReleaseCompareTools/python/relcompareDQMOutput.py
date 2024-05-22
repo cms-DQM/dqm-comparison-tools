@@ -79,7 +79,7 @@ def get_file_pairs(base_dir, base_run, comp_dir, comp_run):
 
 def upload_to_gui(output_dir, num_procs):
     base_files = glob.glob(os.path.join(output_dir, 'base/*.root'))
-    pr_files = glob.glob(os.path.join(output_dir, 'pr/*.root'))
+    pr_files = glob.glob(os.path.join(output_dir, 'comp/*.root'))
 
     files = base_files + pr_files
 
@@ -218,5 +218,5 @@ if __name__ == '__main__':
             os._exit(1)
 
     collect_and_compare_files(args.base_dir, args.base_run, args.comp_dir, args.comp_run, args.output_dir, args.nprocs, args.comprel_name, args.test_number, release_format)
-    # upload_to_gui(args.output_dir, args.nprocs)
+    upload_to_gui(args.output_dir, args.nprocs)
     generate_summary_html(args.output_dir, args.pr_list, args.summary_dir)
