@@ -334,7 +334,7 @@ def get_output_filename(input_file_path, comprel_name, test_number, cmssw_versio
    if isPr:
       base_pr = 'comp'
 
-   return 'DQM_V0001_%s__%s__%s_%s_%s-%s__DQMIO.root' % (run, relval_prefix, cmssw_version, base_pr, comprel_name, test_number)
+   return 'DQM_V0001_%s__%s_%s__%s_%s-%s__DQMIO.root' % (run, relval_prefix, base_pr, cmssw_version, comprel_name, test_number)
 
 def get_run_nr(file_path):
    return os.path.basename(file_path).split('_')[3].split('.')[0].lstrip('R').lstrip('0')
