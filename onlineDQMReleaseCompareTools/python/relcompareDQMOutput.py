@@ -9,8 +9,8 @@ from threading import Thread
 
 COMPARISON_RESULTS = []
 
-dqmgui_url = "http://dqmsrv-c2a06-08-01.cms:8030/dqm/online-playback"
-#dqmgui_url = "https://cmsweb.cern.ch/dqm/online-playback"
+dqmgui_url0 = "http://dqmsrv-c2a06-08-01.cms:8030/dqm/online-playback"
+dqmgui_url1 = "https://cmsweb.cern.ch/dqm/online-playback"
 
 def collect_and_compare_files(base_dir, base_run, comp_dir, comp_run, output_dir, num_procs, comprel_name, test_number, release_format):
     files = get_file_pairs(base_dir, base_run, comp_dir,comp_run )
@@ -97,7 +97,7 @@ def upload(files):
     while files:
         try:
             file = files.pop()
-            command = ['visDQMUpload.py', dqmgui_url, file]
+            command = ['visDQMUpload.py', dqmgui_url0, file]
             print('Uploading output:')
             print(' '.join(command))
 
@@ -138,12 +138,12 @@ def generate_summary_html(output_dir, pr_list, summary_dir):
         overlay_count = baseline_count
 
         # Make urls
-        base_url = f'{dqmgui_url}/start?runnr=%s;dataset%%3D%s;sampletype%%3Doffline_relval;workspace%%3DEverything;' % (comp['run_nr'], comp['base_dataset'])
-        pr_url = f'{dqmgui_url}/start?runnr=%s;dataset%%3D%s;sampletype%%3Doffline_relval;workspace%%3DEverything;' % (comp['run_nr'], comp['pr_dataset'])
-        overlay_url = f'{dqmgui_url}/start?runnr=%s;dataset%%3D%s;referenceshow%%3Dall;referencenorm=False;referenceobj1%%3Dother::%s::;sampletype%%3Doffline_relval;workspace%%3DEverything;' \
+        base_url = f'{dqmgui_url1}/start?runnr=%s;dataset%%3D%s;sampletype%%3Doffline_relval;workspace%%3DEverything;' % (comp['run_nr'], comp['base_dataset'])
+        pr_url = f'{dqmgui_url1}/start?runnr=%s;dataset%%3D%s;sampletype%%3Doffline_relval;workspace%%3DEverything;' % (comp['run_nr'], comp['pr_dataset'])
+        overlay_url = f'{dqmgui_url1}/start?runnr=%s;dataset%%3D%s;referenceshow%%3Dall;referencenorm=False;referenceobj1%%3Dother::%s::;sampletype%%3Doffline_relval;workspace%%3DEverything;' \
             % (comp['run_nr'], comp['pr_dataset'], comp['base_dataset'])
-        base_raw_url = f'{dqmgui_url}/jsroot/index.htm?file={dqmgui_url}/data/browse/%s' % comp['base_file_path_in_gui']
-        pr_raw_url = f'{dqmgui_url}/jsroot/index.htm?file={dqmgui_url}/data/browse/%s' % comp['pr_file_path_in_gui']
+        base_raw_url = f'{dqmgui_url1}/jsroot/index.htm?file={dqmgui_url1}/data/browse/%s' % comp['base_file_path_in_gui']
+        pr_raw_url = f'{dqmgui_url1}/jsroot/index.htm?file={dqmgui_url1}/data/browse/%s' % comp['pr_file_path_in_gui']
 
         table_items += '        <tr>\n'
         table_items += '            <td><a href="%s" target="_blank">%s base GUI</a><span> (%s)</span></td>\n' % (base_url, comp['workflow'], baseline_count)
