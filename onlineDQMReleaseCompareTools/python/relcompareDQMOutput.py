@@ -29,7 +29,7 @@ def compare(base_dir, base_run, comp_dir, comp_run, output_dir, files, comprel_n
         try:
             file_name = files.pop()
             command = ['/home/dqmdevlocal/DQMReleaseCompare/onlineDQMReleaseCompareTools/python/relcompareHistograms.py', '-b', os.path.join(base_dir, file_name), \
-                '-p', os.path.join(comp_dir, file_name.replace(base_run,comp_run)), '-o', output_dir, '-n', comprel_name, '-t', test_number, '-r', release_format]
+                '-p', os.path.join(comp_dir, file_name.replace(base_run,comp_run)), '-o', output_dir, '-n', comprel_name, '-t', test_number, '-r', release_format, '-j', '64']
             print('')
             print('---------------------------------------------')
             print('')

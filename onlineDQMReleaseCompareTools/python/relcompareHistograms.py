@@ -323,31 +323,18 @@ def create_dir(parent_dir, name):
    return dir
 
 def get_output_filename(input_file_path, comprel_name, test_number, cmssw_version, isPr):
-   # Samples of correct output file format:
-   # DQM_V0001_R000320822__wf136_892_pr__CMSSW_10_4_0_pre3-PR25518-1234__DQMIO.root
-   # When run number is 1 we have to use RelVal naming pattern:
-   # DQM_V0002_R000000001__RelVal_wf136_892_pr__CMSSW_10_4_0_pre3-PR25518-1234__DQMIO.root
+   # DQM_V0001_R000320822__SiStrip__CMSSW_10_4_0_compare_base_blablabla_vs_comp_blablabla-1__DQMIO.root
 
    input_file_name = os.path.basename(input_file_path)
 
-   run = input_file_name.split('_')[2]
-   workflow = os.path.basename(os.path.dirname(input_file_path)).split('_')[0].replace('.', '_')
+   client = input_file_name.split('_')[2]
+   run = input_file_name.split('_')[3]
+   relval_prefix = 'RelVal'
 
-   if not workflow:
-      workflow = 'Unknown'
+   return 'DQM_V0001_%s__%s__%s_%s-%s__DQMIO.root' % (run, client, cmssw_version, comprel_name, test_number)
 
-   relval_prefix = ''
-   if run == 'R000000001':
-      relval_prefix = 'RelVal_'
-
-   baseOrPr = 'base'
-   if isPr:
-      baseOrPr = 'comp'
-
-   return 'DQM_V0001_%s__%s_%s__%s-Rel%s-%s__DQMIO.root' % (run, relval_prefix, baseOrPr, cmssw_version, comprel_name, test_number)
-   # return 'DQM_V0001_%s_%s_%s-%s__DQMIO.root' % (run, baseOrPr, comprel_name, test_number)
 def get_run_nr(file_path):
-   return os.path.basename(file_path).split('_')[2].lstrip('R').lstrip('0')
+   return os.path.basename(file_path).split('_')[3].lstrip('R').lstrip('0')
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser(description="This tool compares DQM monitor elements found in base-file with the ones found in comprel-file."
