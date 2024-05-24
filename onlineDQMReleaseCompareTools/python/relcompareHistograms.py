@@ -328,13 +328,13 @@ def get_output_filename(input_file_path, comprel_name, test_number, cmssw_versio
    input_file_name = os.path.basename(input_file_path)
 
    client = input_file_name.split('_')[2]
-   run = input_file_name.split('_')[3]
+   run = input_file_name.split('_')[3].split('.')[0]
    relval_prefix = 'RelVal'
 
    return 'DQM_V0001_%s__%s__%s_%s-%s__DQMIO.root' % (run, client, cmssw_version, comprel_name, test_number)
 
 def get_run_nr(file_path):
-   return os.path.basename(file_path).split('_')[3].lstrip('R').lstrip('0')
+   return os.path.basename(file_path).split('_')[3].split('.')[0].lstrip('R').lstrip('0')
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser(description="This tool compares DQM monitor elements found in base-file with the ones found in comprel-file."
