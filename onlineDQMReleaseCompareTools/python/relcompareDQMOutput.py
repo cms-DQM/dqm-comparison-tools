@@ -9,7 +9,8 @@ from threading import Thread
 
 COMPARISON_RESULTS = []
 
-dqmgui_url = "http://dqmsrv-c2a06-08-01.cms:8030/dqm/online-playback"
+#dqmgui_url = "http://dqmsrv-c2a06-08-01.cms:8030/dqm/online-playback"
+dqmgui_url = "https://cmsweb.cern.ch/dqm/online-playback"
 
 def collect_and_compare_files(base_dir, base_run, comp_dir, comp_run, output_dir, num_procs, comprel_name, test_number, release_format):
     files = get_file_pairs(base_dir, base_run, comp_dir,comp_run )
