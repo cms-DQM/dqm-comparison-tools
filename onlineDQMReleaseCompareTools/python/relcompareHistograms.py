@@ -323,18 +323,18 @@ def create_dir(parent_dir, name):
    return dir
 
 def get_output_filename(input_file_path, comprel_name, test_number, cmssw_version, isPr):
-   # DQM_V0001_R000320822__SiStrip__CMSSW_10_4_0_compare_base_blablabla_vs_comp_blablabla-1__DQMIO.root
+   # DQM_V0001_R320822__RelVal_wf0base__CMSSW_10_4_0_compare_base_blablabla_vs_comp_blablabla-1__DQMIO.root
 
    input_file_name = os.path.basename(input_file_path)
 
    client = input_file_name.split('_')[2]
-   run = input_file_name.split('_')[3].split('.')[0]
+   run = input_file_name.split('_')[3].split('.')[0].lstrip('R').lstrip('0')
    relval_prefix = 'RelVal'
    base_pr = 'base'
    if isPr:
       base_pr = 'comp'
 
-   return 'DQM_V0001_%s__%s_%s__%s_%s-%s__DQMIO.root' % (run, relval_prefix, base_pr, cmssw_version, comprel_name, test_number)
+   return 'DQM_V0001_R1__%s_wf%s__%s_%s_%s_%s-%s__DQMIO.root' % (relval_prefix, run, cmssw_version, client, base_pr, comprel_name, test_number)
 
 def get_run_nr(file_path):
    return os.path.basename(file_path).split('_')[3].split('.')[0].lstrip('R').lstrip('0')
