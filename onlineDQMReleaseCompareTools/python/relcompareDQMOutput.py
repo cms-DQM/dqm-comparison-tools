@@ -9,6 +9,9 @@ from threading import Thread
 
 COMPARISON_RESULTS = []
 
+dqmgui_url0 = "http://dqmsrv-c2a06-08-01.cms:8030/dqm/online-playback"
+dqmgui_url1 = "https://cmsweb.cern.ch/dqm/online-playback"
+
 def collect_and_compare_files(base_dir, base_run, comp_dir, comp_run, output_dir, num_procs, comprel_name, test_number, release_format):
     files = get_file_pairs(base_dir, base_run, comp_dir,comp_run )
     threads = []
@@ -79,7 +82,7 @@ def get_file_pairs(base_dir, base_run, comp_dir, comp_run):
 
 def upload_to_gui(output_dir, num_procs):
     base_files = glob.glob(os.path.join(output_dir, 'base/*.root'))
-    pr_files = glob.glob(os.path.join(output_dir, 'pr/*.root'))
+    pr_files = glob.glob(os.path.join(output_dir, 'comp/*.root'))
 
     files = base_files + pr_files
 
@@ -94,7 +97,7 @@ def upload(files):
     while files:
         try:
             file = files.pop()
-            command = ['visDQMUpload.py', 'https://cmsweb.cern.ch/dqm/dev', file]
+            command = ['visDQMUpload.py', dqmgui_url0, file]
             print('Uploading output:')
             print(' '.join(command))
 
@@ -106,18 +109,20 @@ def upload(files):
             print('Exception uploading a file: %s' % ex)
 
 def generate_summary_html(output_dir, pr_list, summary_dir):
-    template_file_path = os.path.join(os.getenv('CMSSW_BASE'), 'src', 'DQMServices', 'FileIO', 'scripts', 'dqm-histo-comparison-summary-template.html')
+    template_file_path = "/home/dqmdevlocal/DQMReleaseCompare/onlineDQMReleaseCompareTools/templates/dqm-histo-comparison-summary-template.html"
+    if not os.path.isfile(template_file_path):
+        template_file_path = os.path.join(os.getenv('CMSSW_BASE'), 'src', 'DQMServices', 'FileIO', 'scripts', 'dqm-histo-comparison-summary-template.html')
     if not os.path.isfile(template_file_path):
         template_file_path = os.path.join(os.getenv('CMSSW_RELEASE_BASE'), 'src', 'DQMServices', 'FileIO', 'scripts', 'dqm-histo-comparison-summary-template.html')
     template_file = open(template_file_path, 'r')
     result = template_file.read()
     result = result.replace('$PR_LIST$', pr_list)
 
-    template_txtfile_path = os.path.join(os.getenv('CMSSW_BASE'), 'src', 'DQMServices', 'FileIO', 'scripts', 'dqm-histo-comparison-summary-template.txt')
+    template_txtfile_path = "/home/dqmdevlocal/DQMReleaseCompare/onlineDQMReleaseCompareTools/templates/dqm-histo-comparison-summary-template.txt"
+    if not os.path.isfile(template_txtfile_path):
+        template_txtfile_path = os.path.join(os.getenv('CMSSW_BASE'), 'src', 'DQMServices', 'FileIO', 'scripts', 'dqm-histo-comparison-summary-template.txt')
     if not os.path.isfile(template_txtfile_path):
         template_txtfile_path = os.path.join(os.getenv('CMSSW_RELEASE_BASE'), 'src', 'DQMServices', 'FileIO', 'scripts', 'dqm-histo-comparison-summary-template.txt')
-    if not os.path.isfile(template_txtfile_path):
-        template_txtfile_path = "/home/dqmdevlocal/DQMReleaseCompare/onlineDQMReleaseCompareTools/templates/dqm-histo-comparison-summary-template.txt"
     template_txtfile = open(template_txtfile_path, 'r')
     result_txt = template_txtfile.read()
     result_txt = result_txt.replace('$PR_LIST$', pr_list)
@@ -133,24 +138,24 @@ def generate_summary_html(output_dir, pr_list, summary_dir):
         overlay_count = baseline_count
 
         # Make urls
-        base_url = 'https://cmsweb.cern.ch/dqm/dev/start?runnr=%s;dataset%%3D%s;sampletype%%3Doffline_relval;workspace%%3DEverything;' % (comp['run_nr'], comp['base_dataset'])
-        pr_url = 'https://cmsweb.cern.ch/dqm/dev/start?runnr=%s;dataset%%3D%s;sampletype%%3Doffline_relval;workspace%%3DEverything;' % (comp['run_nr'], comp['pr_dataset'])
-        overlay_url = 'https://cmsweb.cern.ch/dqm/dev/start?runnr=%s;dataset%%3D%s;referenceshow%%3Dall;referencenorm=False;referenceobj1%%3Dother::%s::;sampletype%%3Doffline_relval;workspace%%3DEverything;' \
+        base_url = f'{dqmgui_url1}/start?runnr=%s;dataset%%3D%s;sampletype%%3Doffline_relval;workspace%%3DEverything;' % (comp['run_nr'], comp['base_dataset'])
+        pr_url = f'{dqmgui_url1}/start?runnr=%s;dataset%%3D%s;sampletype%%3Doffline_relval;workspace%%3DEverything;' % (comp['run_nr'], comp['pr_dataset'])
+        overlay_url = f'{dqmgui_url1}/start?runnr=%s;dataset%%3D%s;referenceshow%%3Dall;referencenorm=False;referenceobj1%%3Dother::%s::;sampletype%%3Doffline_relval;workspace%%3DEverything;' \
             % (comp['run_nr'], comp['pr_dataset'], comp['base_dataset'])
-        base_raw_url = 'https://cmsweb.cern.ch/dqm/dev/jsroot/index.htm?file=https://cmsweb.cern.ch/dqm/dev/data/browse/%s' % comp['base_file_path_in_gui']
-        pr_raw_url = 'https://cmsweb.cern.ch/dqm/dev/jsroot/index.htm?file=https://cmsweb.cern.ch/dqm/dev/data/browse/%s' % comp['pr_file_path_in_gui']
+        base_raw_url = f'{dqmgui_url1}/jsroot/index.htm?file={dqmgui_url1}/data/browse/%s' % comp['base_file_path_in_gui']
+        pr_raw_url = f'{dqmgui_url1}/jsroot/index.htm?file={dqmgui_url1}/data/browse/%s' % comp['pr_file_path_in_gui']
 
         table_items += '        <tr>\n'
         table_items += '            <td><a href="%s" target="_blank">%s base GUI</a><span> (%s)</span></td>\n' % (base_url, comp['workflow'], baseline_count)
-        table_items += '            <td><a href="%s" target="_blank">%s pr GUI</a><span> (%s)</span></td>\n' % (pr_url, comp['workflow'], pr_count)
+        table_items += '            <td><a href="%s" target="_blank">%s comp GUI</a><span> (%s)</span></td>\n' % (pr_url, comp['workflow'], pr_count)
         table_items += '            <td><a href="%s" target="_blank">%s overlay GUI</a><span> (%s)</span></td>\n' % (overlay_url, comp['workflow'], overlay_count)
         table_items += '            <td><a href="%s" target="_blank">%s base rootjs</a></td>\n' % (base_raw_url, comp['workflow'])
-        table_items += '            <td><a href="%s" target="_blank">%s pr rootjs</a></td>\n' % (pr_raw_url, comp['workflow'])
+        table_items += '            <td><a href="%s" target="_blank">%s comp rootjs</a></td>\n' % (pr_raw_url, comp['workflow'])
         table_items += '            <td><span class="removed">-%s</span><span class="added">+%s</span><span class="changed">%s</span></td>\n' \
             % (comp['removed_elements'], comp['added_elements'], comp['changed_elements'])
         table_items += '        </tr>\n'
 
-        txt_table_items += ' {0} base GUI ({1})    \t{0} pr GUI ({2})    \t{0} overlay GUI ({3})    \t{0} base rootjs ({1})    \t{0} pr rootjs ({2})    \t-{4} +{5} {6}\n'.format(comp['workflow'], baseline_count, pr_count, overlay_count, comp['removed_elements'], comp['added_elements'], comp['changed_elements'])
+        txt_table_items += ' {0} base GUI ({1})    \t{0} comp GUI ({2})    \t{0} overlay GUI ({3})    \t{0} base rootjs ({1})    \t{0} comp rootjs ({2})    \t-{4} +{5} {6}\n'.format(comp['workflow'], baseline_count, pr_count, overlay_count, comp['removed_elements'], comp['added_elements'], comp['changed_elements'])
 
     result = result.replace('$TOTAL_CHANGES$', str(total_changes))
     result = result.replace('$NUMBER_OF_WORKFLOWS$', str(len(COMPARISON_RESULTS)))
@@ -216,5 +221,5 @@ if __name__ == '__main__':
             os._exit(1)
 
     collect_and_compare_files(args.base_dir, args.base_run, args.comp_dir, args.comp_run, args.output_dir, args.nprocs, args.comprel_name, args.test_number, release_format)
-    # upload_to_gui(args.output_dir, args.nprocs)
+    upload_to_gui(args.output_dir, args.nprocs)
     generate_summary_html(args.output_dir, args.pr_list, args.summary_dir)

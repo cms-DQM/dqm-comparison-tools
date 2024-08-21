@@ -1,16 +1,16 @@
 DQM histogram comparison summary
 
-PR(s) being tested:
+Base vs. Comp releases tested:
 $PR_LIST$
 
-Total number of changes to DQM monitor elements made this PR/these PRs:
+Total number of changes to DQM monitor elements:
 $TOTAL_CHANGES$
 
 URLs for each individual workflow ($NUMBER_OF_WORKFLOWS$):
 
-Baseline, pull request, and overlay links point to the DQM GUI.
+The Base, the Comp, and the Overlay links point to the DQM GUI.
 Some changes in DQM files might not be clearly displayed in the DQM GUI, like presence/absence of efficiency flag or changed QT result when the ME that was tested didn't change.
-For this reason, you can use raw baseline and raw pull request links to inspect ROOT files without interpreting them as DQM ROOT file.
+For this reason, you can use Raw Base and Raw Comp links to inspect ROOT files without interpreting them as DQMIO ROOT files.
 
-        Base        PR        Overlay        Raw Base        Raw PR        Removed / Added / Changed
+        Base        Comp        Overlay        Raw Base        Raw Comp        Removed / Added / Changed
 $PER_WORKFLOW_LIST$

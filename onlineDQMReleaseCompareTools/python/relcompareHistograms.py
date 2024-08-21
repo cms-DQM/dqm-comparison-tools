@@ -10,6 +10,13 @@ import numpy as np
 from DQMServices.FileIO.blacklist import get_blacklist
 import multiprocessing
 
+# Skip list of ME keywords
+skip_list = [
+   "processEventRate", "processID", "processLatency", "processStartTimeStamp", "processTimeStamp",
+   "TimingMean", "TimingRMS",
+   "wallTime"
+]
+
 def create_dif(base_file_path, comp_file_path, comprel_name, test_number, cmssw_version, num_processes, output_dir_path):
    base_file = ROOT.TFile(base_file_path, 'read')
    ROOT.gROOT.GetListOfFiles().Remove(base_file)
@@ -138,6 +145,10 @@ def compareMP(shared_paths, pr_flat_dict, comp_run, base_flat_dict, base_run, iP
 
       are_different=False
 
+      # Skip ME keywords
+      if any([True for x in skip_list if (x in pr_item.GetName() and x in base_item.GetName()) or (x in path)]):
+         continue
+
       if pr_item.InheritsFrom('TProfile2D') and base_item.InheritsFrom('TProfile2D'):
          # Compare TProfile (content, entries and errors)
          are_different = not compare_TProfile(pr_item, base_item)
@@ -173,6 +184,10 @@ def compare(shared_paths, pr_flat_dict, comp_run, base_flat_dict, base_run, path
          continue
 
       are_different=False
+
+      # Skip ME keywords
+      if any([True for x in skip_list if (x in pr_item.GetName() and x in base_item.GetName()) or (x in path)]):
+         continue
 
       if pr_item.InheritsFrom('TProfile2D') and base_item.InheritsFrom('TProfile2D'):
          # Compare TProfile (content, entries and errors)
@@ -308,31 +323,21 @@ def create_dir(parent_dir, name):
    return dir
 
 def get_output_filename(input_file_path, comprel_name, test_number, cmssw_version, isPr):
-   # Samples of correct output file format:
-   # DQM_V0001_R000320822__wf136_892_pr__CMSSW_10_4_0_pre3-PR25518-1234__DQMIO.root
-   # When run number is 1 we have to use RelVal naming pattern:
-   # DQM_V0002_R000000001__RelVal_wf136_892_pr__CMSSW_10_4_0_pre3-PR25518-1234__DQMIO.root
+   # DQM_V0001_R320822__RelVal_wf0base__CMSSW_10_4_0_compare_base_blablabla_vs_comp_blablabla-1__DQMIO.root
 
    input_file_name = os.path.basename(input_file_path)
 
-   run = input_file_name.split('_')[2]
-   workflow = os.path.basename(os.path.dirname(input_file_path)).split('_')[0].replace('.', '_')
-
-   if not workflow:
-      workflow = 'Unknown'
-
-   relval_prefix = ''
-   if run == 'R000000001':
-      relval_prefix = 'RelVal_'
-
-   baseOrPr = 'base'
+   client = input_file_name.split('_')[2]
+   run = input_file_name.split('_')[3].split('.')[0].lstrip('R').lstrip('0')
+   relval_prefix = 'RelVal'
+   base_pr = 'base'
    if isPr:
-      baseOrPr = 'comp'
+      base_pr = 'comp'
 
-   return 'DQM_V0001_%s__%s_%s__%s-Rel%s-%s__DQMIO.root' % (run, relval_prefix, baseOrPr, cmssw_version, comprel_name, test_number)
-   # return 'DQM_V0001_%s_%s_%s-%s__DQMIO.root' % (run, baseOrPr, comprel_name, test_number)
+   return 'DQM_V0001_R1__%s_wf%s__%s_%s_%s_%s-%s__DQMIO.root' % (relval_prefix, run, cmssw_version, client, base_pr, comprel_name, test_number)
+
 def get_run_nr(file_path):
-   return os.path.basename(file_path).split('_')[2].lstrip('R').lstrip('0')
+   return os.path.basename(file_path).split('_')[3].split('.')[0].lstrip('R').lstrip('0')
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser(description="This tool compares DQM monitor elements found in base-file with the ones found in comprel-file."
