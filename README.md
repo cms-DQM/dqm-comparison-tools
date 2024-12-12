@@ -1,3 +1,6 @@
+> [!NOTE]
+> This repository is archived, in favor of the functionality added to `fff_dqmtools` in https://github.com/cms-DQM/fff_dqmtools/pull/27/files
+ 
 # DQM Online bin-by-bin comparison
 
 ## Overview
